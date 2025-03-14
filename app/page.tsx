@@ -1,10 +1,25 @@
 import Hero from "@/components/hero";
-import { hasEnvVars } from "@/utils/supabase/check-env-vars";
+import DogFetch from "@/components/dog-fetcher"
+import styles from './globals.css'
 
-export default async function Home() {
+export default function Home() {
   return (
     <>
       <Hero />
+      <DogFetch className={styles.DogDisplay}/>
+      <DogFetch />
+      <DogFetch />
+      <DogFetch />
+      <DogFetch />
+      <DogFetch />
+      <DogFetch />
+      <DogFetch />
+      <DogFetch />
+      <DogFetch />
+      <DogFetch />
+      <DogFetch />
+      <DogFetch />
+      <DogFetch />
     </>
   );
 }
