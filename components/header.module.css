@@ -1,0 +1,48 @@
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10x 20px;
+    background-color: rgb(112, 160, 118);
+    height: 80px;
+}
+
+.headerTitle {
+    color: white;
+    margin: 0;
+    margin-left: 70px;
+    flex-grow: 1;
+    text-decoration: none;
+}
+
+.headerNav {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.headerList {
+    margin-left: 20px;
+}
+
+.headerLink {
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+    padding: 10px 15px;
+}
+
+.headerContact {
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+    padding: 10px 15px;
+    margin-right: 70px;
+}
+
+.pawLogo {
+    width: 40px;
+    height: auto;
+    margin-right: 10px;
+  }

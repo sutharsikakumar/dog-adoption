@@ -1,5 +1,4 @@
-import { hasEnvVars } from "@/utils/supabase/check-env-vars";
-import { Geist } from "next/font/google";
+import { Figtree } from "next/font/google"; 
 import { ThemeProvider } from "next-themes";
 import Link from "next/link";
 import "./globals.css";
@@ -14,7 +13,8 @@ export const metadata = {
   description: "The fastest way to build apps with Next.js and Supabase",
 };
 
-const geistSans = Geist({
+// Load Figtree font
+const figtree = Figtree({
   display: "swap",
   subsets: ["latin"],
 });
@@ -25,7 +25,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={geistSans.className} suppressHydrationWarning>
+    <html lang="en" className={figtree.className} suppressHydrationWarning>
       <body className="bg-background text-foreground">
         <ThemeProvider
           attribute="class"
@@ -33,9 +33,9 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-              <div className="flex flex-col gap-20 max-w-5xl p-5">
-                {children}
-              </div>
+          <div className="flex flex-col gap-20 max-w-5xl p-5">
+            {children}
+          </div>
         </ThemeProvider>
       </body>
     </html>

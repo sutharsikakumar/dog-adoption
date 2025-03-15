@@ -1,0 +1,27 @@
+.center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+    margin-left: 70px;
+    margin-right: 70px;
+  }
+  
+  .breedList {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 25px;
+    justify-content: center;
+    font-size: 24px;
+  }
+  
+  .breedItem {
+    padding: 5px;
+    text-decoration: none;
+    color: #333;
+  }
+  
+  .breedItem:hover {
+    background-color: #cbeec7;
+  }
+  
