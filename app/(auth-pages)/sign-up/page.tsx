@@ -1,51 +1,77 @@
-import { signUpAction } from "@/app/actions";
-import { FormMessage, Message } from "@/components/form-message";
-import { SubmitButton } from "@/components/submit-button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { signUpAction } from "../../actions";
 import Link from "next/link";
-import { SmtpMessage } from "../smtp-message";
+import { useState } from "react";
 
 export default async function Signup(props: {
-  searchParams: Promise<Message>;
+  searchParams: Promise<{ type: string; text: string }>;
 }) {
   const searchParams = await props.searchParams;
-  if ("message" in searchParams) {
-    return (
-      <div className="w-full flex-1 flex items-center h-screen sm:max-w-md justify-center gap-2 p-4">
-        <FormMessage message={searchParams} />
-      </div>
-    );
-  }
+  const [formStatus, setFormStatus] = useState<string | null>(null);
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const formData = new FormData(event.target as HTMLFormElement);
+    const data = Object.fromEntries(formData.entries());
+    const formDataInstance = new FormData();
+    Object.entries(data).forEach(([key, value]) => {
+      formDataInstance.append(key, value as string);
+    });
+
+    const result = await signUpAction(formDataInstance);
+    setFormStatus(result.text || "An error occurred during sign-up.");
+  };
 
   return (
     <>
-      <form className="flex flex-col min-w-64 max-w-64 mx-auto">
+      {searchParams?.text && (
+        <div className="w-full flex-1 flex items-center h-screen sm:max-w-md justify-center gap-2 p-4">
+          <div className="text-sm text-red-500">{searchParams.text}</div>
+        </div>
+      )}
+
+      <form className="flex flex-col min-w-64 max-w-64 mx-auto" onSubmit={handleSubmit}>
         <h1 className="text-2xl font-medium">Sign up</h1>
-        <p className="text-sm text text-foreground">
+        <p className="text-sm text-foreground">
           Already have an account?{" "}
           <Link className="text-primary font-medium underline" href="/sign-in">
             Sign in
           </Link>
         </p>
-        <div className="flex flex-col gap-2 [&>input]:mb-3 mt-8">
-          <Label htmlFor="email">Email</Label>
-          <Input name="email" placeholder="you@example.com" required />
-          <Label htmlFor="password">Password</Label>
-          <Input
-            type="password"
+
+        <div className="flex flex-col gap-2 mt-8">
+          <label htmlFor="email" className="font-medium text-lg">Email</label>
+          <input
+            id="email"
+            name="email"
+            type="email"
+            placeholder="you@example.com"
+            required
+            className="px-3 py-2 border rounded-md"
+          />
+
+          <label htmlFor="password" className="font-medium text-lg">Password</label>
+          <input
+            id="password"
             name="password"
+            type="password"
             placeholder="Your password"
             minLength={6}
             required
+            className="px-3 py-2 border rounded-md"
           />
-          <SubmitButton formAction={signUpAction} pendingText="Signing up...">
+          <button
+            type="submit"
+            className="bg-blue-500 text-white py-2 mt-4 rounded-md"
+          >
             Sign up
-          </SubmitButton>
-          <FormMessage message={searchParams} />
+          </button>
+          {formStatus && (
+            <div className="text-sm text-red-500 mt-2">
+              {formStatus}
+            </div>
+          )}
         </div>
       </form>
-      <SmtpMessage />
     </>
   );
 }
