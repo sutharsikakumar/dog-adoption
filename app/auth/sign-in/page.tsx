@@ -16,12 +16,21 @@ export default function SignInPage() {
       const { data: { session } } = await supabase.auth.getSession();
       
       if (session) {
-        // Check if user is an admin
-        const { data: admin } = await supabase
+        const uid = session.user.id;
+        console.log("Found existing session for user:", uid);
+        
+        // Check if user is an admin by comparing uid with id in admin table
+        const { data: admin, error: adminError } = await supabase
           .from("admin")
-          .select("email")
-          .eq("email", session.user.email)
+          .select("*")
+          .eq("id", uid)  // Compare uid with the id column
           .single();
+          
+        console.log("Admin check:", { 
+          uid, 
+          admin, 
+          error: adminError?.message 
+        });
           
         if (admin) {
           router.push("/admin");
@@ -48,12 +57,29 @@ export default function SignInPage() {
         return;
       }
       
-      // Check if user is an admin
+      const uid = data.user.id;
+      console.log("Signed in user uid:", uid);
+      
+      // For debugging - get all admin records
+      const { data: allAdmins, error: listError } = await supabase
+        .from("admin")
+        .select("*");
+      
+      console.log("All admin records:", allAdmins);
+      console.log("List error:", listError?.message);
+      
+      // Check if user is an admin by comparing uid with id in admin table
       const { data: admin, error: adminError } = await supabase
         .from("admin")
-        .select("email")
-        .eq("email", data.user?.email)
+        .select("*")
+        .eq("id", uid)  // Compare uid with the id column
         .single();
+        
+      console.log("Admin check results:", {
+        uid,
+        admin,
+        error: adminError?.message
+      });
         
       if (adminError || !admin) {
         setError("You do not have admin privileges");

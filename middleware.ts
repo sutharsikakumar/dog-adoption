@@ -32,16 +32,21 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/auth/sign-in", request.url));
   }
 
-  // Check if the user is an admin - using email instead of user_id
+  // Get the user's uid from the session
+  const uid = session.user.id;
+  
+  // Check if the user's uid matches any id in the admin table
   const { data: admin, error: adminError } = await supabase
     .from("admin")
-    .select("email")
-    .eq("email", session.user.email)
+    .select("*")
+    .eq("id", uid)  // Compare uid with the id column
     .single();
 
   console.log("Admin check:", { 
+    uid: uid,
     email: session.user.email,
     isAdmin: !!admin, 
+    adminData: admin,
     error: adminError?.message 
   });
 

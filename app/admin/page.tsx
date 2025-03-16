@@ -2,33 +2,51 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
-import { User } from "@supabase/supabase-js"; // Import User type
+import { User } from "@supabase/supabase-js";
 
 export default function AdminDashboard() {
-  // Properly type the user state
   const [user, setUser] = useState<User | null>(null);
+  const [adminData, setAdminData] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
   useEffect(() => {
-    const fetchUser = async () => {
+    const fetchUserAndAdminData = async () => {
       try {
+        // Get the current user
         const { data, error } = await supabase.auth.getUser();
         
         if (error || !data?.user) {
           throw new Error("Not authenticated");
         }
         
+        const uid = data.user.id;
         setUser(data.user);
+        
+        // Fetch the admin data for this user
+        const { data: admin, error: adminError } = await supabase
+          .from("admin")
+          .select("*")
+          .eq("id", uid)  // Compare uid with the id column
+          .single();
+          
+        if (adminError) {
+          console.error("Error fetching admin data:", adminError);
+          throw new Error("Not an admin");
+        } else {
+          setAdminData(admin);
+        }
+        
       } catch (err) {
-        console.error("Error fetching user:", err);
+        console.error("Error fetching user or admin data:", err);
+        router.push("/auth/sign-in");
       } finally {
         setLoading(false);
       }
     };
 
-    fetchUser();
-  }, []);
+    fetchUserAndAdminData();
+  }, [router]);
 
   const signOut = async () => {
     await supabase.auth.signOut();
@@ -55,11 +73,25 @@ export default function AdminDashboard() {
         </button>
       </div>
       
-      <div className="bg-white p-6 rounded-lg shadow-md">
+      <div className="bg-white p-6 rounded-lg shadow-md mb-6">
         <h2 className="text-xl font-semibold mb-4">Welcome, Admin!</h2>
-        {user && <p className="mb-2">Email: {user.email}</p>}
+        {user && (
+          <>
+            <p className="mb-2"><strong>User ID:</strong> {user.id}</p>
+            <p className="mb-2"><strong>Email:</strong> {user.email}</p>
+          </>
+        )}
         <p>You are logged in as an administrator.</p>
       </div>
+      
+      {adminData && (
+        <div className="bg-white p-6 rounded-lg shadow-md">
+          <h2 className="text-xl font-semibold mb-4">Admin Account Details</h2>
+          <pre className="bg-gray-100 p-4 rounded overflow-auto">
+            {JSON.stringify(adminData, null, 2)}
+          </pre>
+        </div>
+      )}
     </div>
   );
 }
