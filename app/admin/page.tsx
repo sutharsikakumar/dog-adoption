@@ -1,61 +1,65 @@
-// app/admin/page.tsx
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
+import { User } from "@supabase/supabase-js"; // Import User type
 
 export default function AdminDashboard() {
-  const [isAdmin, setIsAdmin] = useState(false);
+  // Properly type the user state
+  const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
   useEffect(() => {
-    const checkAdmin = async () => {
+    const fetchUser = async () => {
       try {
-        // Check if user is authenticated
-        const { data: { user }, error: userError } = await supabase.auth.getUser();
-
-        if (userError || !user) {
-          console.log("No authenticated user found");
-          router.push("/auth/sign-in");
-          return;
+        const { data, error } = await supabase.auth.getUser();
+        
+        if (error || !data?.user) {
+          throw new Error("Not authenticated");
         }
-
-        console.log("Authenticated user:", user.email);
-
-        // Check if user is in admin table
-        const { data: admin, error: adminError } = await supabase
-          .from("admin")
-          .select("email")
-          .eq("email", user.email)
-          .single();
-
-        if (adminError || !admin) {
-          console.log("User not found in admin table:", adminError);
-          router.push("/auth/sign-in");
-        } else {
-          console.log("Admin verified:", admin);
-          setIsAdmin(true);
-        }
+        
+        setUser(data.user);
       } catch (err) {
-        console.error("Error checking admin status:", err);
-        router.push("/auth/sign-in");
+        console.error("Error fetching user:", err);
       } finally {
         setLoading(false);
       }
     };
 
-    checkAdmin();
-  }, [router]);
+    fetchUser();
+  }, []);
 
-  if (loading) return <p>Loading...</p>;
-  if (!isAdmin) return null; // Don't render anything if not admin
+  const signOut = async () => {
+    await supabase.auth.signOut();
+    router.push("/auth/sign-in");
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p className="text-xl">Loading...</p>
+      </div>
+    );
+  }
 
   return (
-    <div>
-      <h1>Admin Dashboard</h1>
-      <p>Welcome, Admin!</p>
-      {/* CRUD operations for dog adoption list will be added here */}
+    <div className="max-w-4xl mx-auto p-6">
+      <div className="flex justify-between items-center mb-8">
+        <h1 className="text-3xl font-bold">Admin Dashboard</h1>
+        <button 
+          onClick={signOut}
+          className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+        >
+          Sign Out
+        </button>
+      </div>
+      
+      <div className="bg-white p-6 rounded-lg shadow-md">
+        <h2 className="text-xl font-semibold mb-4">Welcome, Admin!</h2>
+        {user && <p className="mb-2">Email: {user.email}</p>}
+        <p>You are logged in as an administrator.</p>
+      </div>
     </div>
   );
 }
