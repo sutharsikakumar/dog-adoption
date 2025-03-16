@@ -20,7 +20,7 @@ export default function Header() {
             <Link href="/breeds" className={styles.headerLink}>breeds</Link>
           </li>
           <li className={styles.headerList}>
-            <Link href="/contact" className={styles.headerContact}>contact</Link>
+            <Link href="/auth/sign-in" className={styles.headerContact}>sign-in</Link>
           </li>
         </ul>
       </nav>
