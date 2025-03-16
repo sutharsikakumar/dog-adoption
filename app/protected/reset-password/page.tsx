@@ -1,3 +1,5 @@
+"use client";
+
 import { resetPasswordAction } from "../../actions";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";

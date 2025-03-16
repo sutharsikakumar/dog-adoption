@@ -1,3 +1,4 @@
+"use client";
 import { forgotPasswordAction } from "../../actions";
 import Link from "next/link";
 import { useState } from "react";
