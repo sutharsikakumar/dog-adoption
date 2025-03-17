@@ -1,0 +1,66 @@
+.textFormat {
+    font-weight: 800;
+}
+
+ .container {
+    padding: 20px;
+  }
+  
+  .textFormat {
+    margin-bottom: 20px;
+  }
+  
+  .dogsSection {
+    margin-top: 20px;
+  }
+  
+  .form {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  
+  .form input, .form select {
+    padding: 5px;
+  }
+  
+  .form button {
+    padding: 5px 15px;
+    background-color: #5e9bdd;
+    border-radius: 20px;
+    color: white;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .form button:hover {
+    background-color: #0056b3;
+  }
+  
+  .table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .table th, .table td {
+    padding: 8px;
+    border: 1px solid #ddd;
+    text-align: left;
+  }
+  
+  .table th {
+    background-color: #f2f2f2;
+  }
+  
+  .deleteButton {
+    padding: 5px 10px;
+    background-color: #e6818b;
+    border-radius: 20px;
+    color: white;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .deleteButton:hover {
+    background-color: #c82333;
+  }
